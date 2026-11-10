@@ -1,0 +1,60 @@
+/// <reference types="vitest/config" />
+import { defineConfig, type Plugin } from 'vite';
+import react from '@vitejs/plugin-react';
+import { VitePWA } from 'vite-plugin-pwa';
+
+/**
+ * Strict Content-Security-Policy injected only in production builds (the dev server needs inline scripts).
+ * No third-party origin is allowed: label data can never leave the device through the page.
+ */
+const CSP =
+  "default-src 'self'; script-src 'self' 'wasm-unsafe-eval'; worker-src 'self' blob:; " +
+  "img-src 'self' data: blob:; style-src 'self' 'unsafe-inline'; connect-src 'self' blob: data:; " +
+  "frame-src 'self' blob:; object-src 'none'; base-uri 'self'";
+
+function cspPlugin(): Plugin {
+  return {
+    name: 'labelsheet-csp',
+    apply: 'build',
+    transformIndexHtml: () => [
+      { tag: 'meta', attrs: { 'http-equiv': 'Content-Security-Policy', content: CSP }, injectTo: 'head-prepend' },
+    ],
+  };
+}
+
+// Relative base so the same bundle works on any web path and inside the Capacitor WebView.
+export default defineConfig({
+  base: './',
+  plugins: [
+    react(),
+    cspPlugin(),
+    VitePWA({
+      registerType: 'autoUpdate',
+      // Precache everything (incl. the pdf.js worker .mjs) so the app works offline after first load.
+      workbox: {
+        globPatterns: ['**/*.{js,mjs,css,html,svg,png,webmanifest}'],
+        maximumFileSizeToCacheInBytes: 8 * 1024 * 1024,
+      },
+      manifest: {
+        name: 'LabelSheet',
+        short_name: 'LabelSheet',
+        description: 'Impagina le etichette di spedizione su fogli A4. Tutto sul dispositivo.',
+        theme_color: '#1f6feb',
+        background_color: '#ffffff',
+        display: 'standalone',
+        start_url: '.',
+        icons: [
+          { src: 'icon.svg', sizes: 'any', type: 'image/svg+xml', purpose: 'any' },
+          { src: 'icon-maskable.svg', sizes: 'any', type: 'image/svg+xml', purpose: 'maskable' },
+        ],
+      },
+    }),
+  ],
+  worker: { format: 'es' },
+  // pdf.js alone is ~1 MB: big chunks are expected and precached once by the service worker.
+  build: { target: 'es2022', sourcemap: false, chunkSizeWarningLimit: 2000 },
+  test: {
+    environment: 'node',
+    include: ['src/**/*.test.ts'],
+  },
+});
