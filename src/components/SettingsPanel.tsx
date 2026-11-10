@@ -1,6 +1,6 @@
 import type { Dispatch } from 'react';
 import type { Messages } from '../core/i18n';
-import type { GridId, Lang, PaperName, Settings, ThemePref } from '../core/types';
+import type { GridId, PaperName, Settings, ThemePref } from '../core/types';
 import type { Action } from '../state/store';
 
 interface Props {
@@ -72,14 +72,8 @@ export function SettingsPanel({ t, settings, dispatch }: Props) {
         />
         {t.grayscale}
       </label>
+      {/* The IT/EN switch lives in the header, always visible. */}
       <div className="row3">
-        <div className="field">
-          <label htmlFor="lang">{t.language}</label>
-          <select id="lang" value={settings.lang} onChange={(e) => set({ lang: e.target.value as Lang })}>
-            <option value="it">Italiano</option>
-            <option value="en">English</option>
-          </select>
-        </div>
         <div className="field">
           <label htmlFor="theme">{t.theme}</label>
           <select id="theme" value={settings.theme} onChange={(e) => set({ theme: e.target.value as ThemePref })}>

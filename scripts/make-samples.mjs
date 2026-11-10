@@ -38,7 +38,7 @@ function drawLabel(page, font, bold, { x, y, w, h, carrier, n }) {
   page.drawRectangle({ x, y, width: w, height: h, borderColor: rgb(0, 0, 0), borderWidth: 1.5 });
   page.drawRectangle({ x, y: y + h - 34, width: w, height: 34, color: carrier === 'DPD' ? rgb(0.86, 0.08, 0.24) : rgb(0.1, 0.3, 0.7) });
   page.drawText(`${carrier} CLASSIC`, { x: x + 10, y: y + h - 24, size: 16, font: bold, color: rgb(1, 1, 1) });
-  const lines = ['Mittente: Negozio Demo Srl', 'Via Esempio 12, 20100 Milano MI', '', 'Destinatario:', `Mario Rossi ${n}`, `Via Roma ${n}`, '00100 Roma RM', 'Tel. 000 000 0000'];
+  const lines = ['Sender: Demo Shop Ltd', 'Via Esempio 12, 20100 Milano MI', '', 'Recipient:', `Mario Rossi ${n}`, `Via Roma ${n}`, '00100 Roma RM', 'Tel. 000 000 0000'];
   lines.forEach((t, i) => page.drawText(t, { x: x + 10, y: y + h - 56 - i * 14, size: 10, font }));
   bars(page, x + 10, y + 40, w - 20, Math.min(90, h * 0.25), n * 7919);
   page.drawText(`*${carrier}${String(n).padStart(10, '0')}*`, { x: x + 10, y: y + 22, size: 9, font });

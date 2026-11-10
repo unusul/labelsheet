@@ -1,4 +1,4 @@
-import type { PaperName, PaperSize } from './types';
+import type { Lang, PaperName, PaperSize } from './types';
 
 export const PT_PER_MM = 72 / 25.4;
 
@@ -27,8 +27,9 @@ export const CROP_SAFETY_MARGIN_PT = 2;
 /** Grey level (0-255) under which a pixel counts as "ink". */
 export const INK_THRESHOLD = 250;
 
-/** Output file name: etichette_YYYY-MM-DD.pdf (local date). */
-export function outputFileName(date = new Date()): string {
+/** Output file name, local date: etichette_YYYY-MM-DD.pdf (Italian UI) or labels_YYYY-MM-DD.pdf (English UI). */
+export function outputFileName(lang: Lang = 'en', date = new Date()): string {
   const pad = (n: number) => String(n).padStart(2, '0');
-  return `etichette_${date.getFullYear()}-${pad(date.getMonth() + 1)}-${pad(date.getDate())}.pdf`;
+  const prefix = lang === 'it' ? 'etichette' : 'labels';
+  return `${prefix}_${date.getFullYear()}-${pad(date.getMonth() + 1)}-${pad(date.getDate())}.pdf`;
 }

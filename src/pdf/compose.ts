@@ -81,7 +81,7 @@ async function embedLabel(
 
 export async function composePdf(req: ComposeRequest, load: SourceLoader): Promise<Uint8Array> {
   const out = await PDFDocument.create();
-  out.setTitle(req.title ?? 'Etichette');
+  out.setTitle(req.title ?? 'Labels');
   out.setProducer('LabelSheet');
   out.setCreator('LabelSheet');
   const cache = new Map<string, PDFEmbeddedPage>();

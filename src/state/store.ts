@@ -35,7 +35,7 @@ export const DEFAULT_SETTINGS: Settings = {
   paddingMm: 1.4,
   cutLines: true,
   colorMode: 'color',
-  lang: 'it',
+  lang: 'en',
   theme: 'system',
 };
 

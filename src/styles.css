@@ -115,6 +115,28 @@ h2 {
 .brand p {
   margin: 0;
 }
+.lang-switch {
+  display: inline-flex;
+  border: 1px solid var(--border);
+  border-radius: 999px;
+  overflow: hidden;
+  margin-left: 8px;
+  flex-shrink: 0;
+}
+.lang-switch button {
+  min-height: var(--tap);
+  min-width: var(--tap);
+  border: 0;
+  background: var(--surface);
+  color: var(--text);
+  font: inherit;
+  font-weight: 600;
+  cursor: pointer;
+}
+.lang-switch button[aria-pressed='true'] {
+  background: var(--primary);
+  color: var(--primary-text);
+}
 .stepper {
   display: flex;
   gap: 6px;

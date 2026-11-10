@@ -108,7 +108,7 @@ export function App() {
       const labels: Record<string, ComposeLabel> = {};
       for (const i of items) labels[i.id] = { sourceId: i.sourceId, pageIndex: i.pageIndex, crop: i.crop, rotation: effectiveRotation(i) };
       try {
-        const bytes = await getEngine().compose({ paper, sheets: result.sheets, labels, cutLines: settings.cutLines, grayscale, title: outputFileName() });
+        const bytes = await getEngine().compose({ paper, sheets: result.sheets, labels, cutLines: settings.cutLines, grayscale, title: outputFileName(settings.lang) });
         if (!stale) setPdf(bytes);
       } catch (e) {
         if (!stale) setStatus(`${t.error}: ${String(e)}`);
@@ -124,7 +124,7 @@ export function App() {
 
   const runOutput = async (fn: (b: Uint8Array, name: string, title: string) => Promise<OutputResult>, kind: 'download' | 'share' | 'print') => {
     if (!pdf) return;
-    const res = await fn(pdf, outputFileName(), outputFileName());
+    const res = await fn(pdf, outputFileName(settings.lang), outputFileName(settings.lang));
     if (res === 'fallback-download') setStatus(t.sharedFallback);
     else if (res === 'native-share' && kind === 'print') setStatus(t.nativePrintHint);
     else if (res === 'done' && kind === 'download') setStatus(isNative() ? t.savedDocuments : t.saved);
@@ -146,6 +146,20 @@ export function App() {
           <div>
             <h1>LabelSheet</h1>
             <p className="muted small">{t.appTagline}</p>
+          </div>
+          <div className="lang-switch" role="group" aria-label={t.language}>
+            {(['it', 'en'] as const).map((lang) => (
+              <button
+                key={lang}
+                type="button"
+                lang={lang}
+                aria-pressed={settings.lang === lang}
+                aria-label={lang === 'it' ? 'Italiano' : 'English'}
+                onClick={() => dispatch({ type: 'settings', patch: { lang } })}
+              >
+                {lang.toUpperCase()}
+              </button>
+            ))}
           </div>
         </div>
         <nav aria-label="Steps">
@@ -277,7 +291,7 @@ export function App() {
               </button>
             </div>
             <p className="muted small" aria-live="polite">
-              {busy ? t.generating : `${outputFileName()} · ${t.summary(items.length, result.sheets.length, gridName)}`}
+              {busy ? t.generating : `${outputFileName(settings.lang)} · ${t.summary(items.length, result.sheets.length, gridName)}`}
             </p>
             {status && (
               <p className="note" role="status">
